@@ -1,17 +1,21 @@
 'use client'
-import { Stack, Box, TextField, Button } from "@mui/material";
+import { Stack, Box, TextField, Button, CircularProgress, Typography } from "@mui/material";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Head from 'next/head';
+
+
 
 export default function Home() {
   const [messages, setMessages] = useState([
     {
     role: 'assistant',
-    content: `Hi, I'm the Headstarter Support Agent, how can I assist you today?`,
+    content: `Hi, I'm the Gainful Support Agent, how can I assist you today?`,
     },
   ])
 
   const [message, setMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const sendMessage = async() => {
     setMessage('')
@@ -27,7 +31,7 @@ export default function Home() {
       },
       body: JSON.stringify([...messages, {role: 'user', content: message}]),
     }).then(async (res) => {
-      const reader = res.body.getReader({})
+      const reader = res.body.getReader()
       const decoder = new TextDecoder()
 
       let result =''
@@ -50,60 +54,152 @@ export default function Home() {
         return reader.read().then(processText)
       })
     })
+
   }
 
+  const handleKeyPress = (event) => {
+    if (event.key == 'Enter' && !event.shiftKey){
+      event.preventDefault()
+      sendMessage()
+    }
+  }
+  
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({behavior: "smooth"})
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
+
+
   return(
-    <Box 
+    <>
+    <Box
     width="100vw"
     height="100vh"
+    bgcolor="#F8F4F0"
     display="flex"
     flexDirection="column"
-    justifyContent="center"
-    alignItems="center">
-      <Stack
-      direction="column"
-      width="600px"
-      height="700px"
-      border="1px solid black"
-      p={2}
-      spacing={2}>
-        <Stack 
+    >
+
+      {/* header */}
+      <Box
+      maxWidth
+      height={100}
+      bgcolor={"#204D46"}
+      display="flex" 
+      alignItems="center"
+      justifyContent="center"
+      >
+        <Typography
+         variant="h4" 
+         color="white" 
+         >
+          {/* find font */}
+          GAINFUL CUSTOMER SUPPORT
+        </Typography>
+      </Box>
+      
+      <Box
+      sx={{flex: 1}}
+      m={5}
+      display="flex"
+      flexDirection={"row"}
+      gap={10}
+      >
+        {/* Chat History */}
+        <Box
+        width={350}
+        height="100%"
+        bgcolor={"white"}
+        borderRadius={4}
+        display="flex"
+        justifyContent={"center"}
+        >
+          <Typography
+          mt={2}
+          fontWeight="bold"
+          >
+            Chat History
+          </Typography>
+        </Box>
+
+        {/* Chat */}
+        <Stack
+        sx={{flex: 1}}
+        height="100%"
+        direction="column"
+        p={2}
+        spacing={2}
+        
+        >
+          <Stack 
         direction="column"
         spacing={2}
         flexGrow={1}
         overflow="auto"
-        maxHeight="100%">
+        maxHeight={530}>
           {
             messages.map((message, index) => (
               <Box key={index} display = "flex" justifyContent={
                 message.role == 'assistant' ? 'flex-start' : 'flex-end'
               }>
                 <Box bgcolor={
-                  message.role == 'assistant' ? 'primary.main' : 'secondary.main'
+                  message.role == 'assistant' ? 'white' : '#204D46'
                 }
-                color="white"
-                borderRadius={16}
-                p={3}>
+                color={message.role == 'assistant' ? 'black' : 'white'}
+                borderRadius={4}
+                px={3}
+                py={2}
+                fontSize={13}>
                   {message.content}
                 </Box>
               </Box>
             ))
           }
+          <div ref={messagesEndRef} />
         </Stack>
         <Stack direction="row" spacing={2}>
           <TextField 
-          label="message"
+          placeholder="Ask a question"
+          bgcolor="white"
           fullWidth
           value={message}
-          onChange={(e) => setMessage(e.target.value)}/>
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
+          disabled={isLoading}
+          sx={{
+            '& .MuiInputBase-input': {
+              backgroundColor: 'white', 
+            },
+            '&:hover fieldset': {
+              borderColor: 'green', 
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#204D46', 
+            }
+          }}
+          />
           <Button 
-          variant="contained"
-          onClick={sendMessage}>
+          variant="outlined"
+          onClick={sendMessage}
+          sx={{bgcolor: "#DBDE8D", borderColor: "#DBDE8D", color: "white",
+              '&:hover':{bgcolor: "#76915e", borderColor: "#76915e"} }}
+          >
             Send
           </Button>
           
         </Stack>
-      </Stack>
+          
+        </Stack>
+      </Box>
     </Box>
+
+
+    </>
   )
 }
