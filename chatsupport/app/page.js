@@ -89,19 +89,24 @@ export default function Home() {
       {/* header */}
       <Box
       maxWidth
-      height={100}
+      height={90}
       bgcolor={"#204D46"}
       display="flex" 
       alignItems="center"
       justifyContent="center"
       >
-        <Typography
-         variant="h4" 
-         color="white" 
-         >
-          {/* find font */}
-          GAINFUL CUSTOMER SUPPORT
-        </Typography>
+
+        <Box
+          component="img"
+          sx={{
+            height: 50,
+            width: 50,
+            
+          }}
+          
+          alt="Logo"
+          src="https://www.gainful.com/_next/image/?url=https%3A%2F%2Fdlye1hka1kz5z.cloudfront.net%2F_next%2Fstatic%2Fmedia%2Flogo-light.082ab69b.webp&w=1200&q=75"
+        />
       </Box>
       
       <Box
@@ -113,19 +118,69 @@ export default function Home() {
       >
         {/* Chat History */}
         <Box
-        width={350}
+        width={320}
         height="100%"
         bgcolor={"white"}
-        borderRadius={4}
+        borderRadius={3}
         display="flex"
-        justifyContent={"center"}
+        alignItems={"center"}
+        flexDirection="column"
         >
           <Typography
-          mt={2}
+          my={2}
           fontWeight="bold"
           >
             Chat History
           </Typography>
+          
+          <Box
+          width={270}
+          length={100}
+          mb={4}
+          >
+          <TextField 
+          placeholder="Search chats"
+          bgcolor="#F5F5F5"
+          fullWidth
+          value={message}
+          sx={{
+            "& fieldset": { border: 'none' },
+            '& .MuiInputBase-input': {
+              backgroundColor: '#F5F5F5', 
+            },
+            '&:hover fieldset': {
+              borderColor: 'green', 
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#204D46', 
+            }
+          }}
+          />
+          </Box>
+
+          <Box
+          width={270}
+          height={100}
+          bgcolor="#204D46"
+          borderRadius={3}
+          mb={2}
+          >
+          </Box>
+          <Box
+          width={270}
+          height={100}
+          bgcolor="#F5F5F5"
+          borderRadius={3}
+          mb={2}
+          display="flex"
+          alignItems={"center"}
+          justifyContent={"center"}
+          >
+            <Typography variant="h2" color={"#7F928F"}>
+              +
+            </Typography>
+          </Box>
+
         </Box>
 
         {/* Chat */}
@@ -173,6 +228,7 @@ export default function Home() {
           onKeyPress={handleKeyPress}
           disabled={isLoading}
           sx={{
+            "& fieldset": { border: 'none' },
             '& .MuiInputBase-input': {
               backgroundColor: 'white', 
             },
